@@ -12,6 +12,7 @@ export const MeetingContext = createContext();
 export const MeetingProvider = ({ children }) => {
   const [meetings, setMeetings] = useState([]);
   const [error, setError] = useState(false);
+  const [openErrorModal, setOpenErrorModal] = useState(false);
   const [collaborators] = useState([
     "Jack Sparrow",
     "John Wick",
@@ -33,6 +34,19 @@ export const MeetingProvider = ({ children }) => {
 
     loadMeetingsFromIndexedDB();
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      setOpenErrorModal(true);
+    }
+  }, [error]);
+
+  const handleCloseErrorModal = () => {
+    setOpenErrorModal(false);
+    setTimeout(() => {
+      setError(false);
+    }, 300);
+  };
 
   const addMeeting = async (meeting) => {
     try {
@@ -85,6 +99,8 @@ export const MeetingProvider = ({ children }) => {
         collaborators,
         error,
         setError,
+        openErrorModal,
+        handleCloseErrorModal,
       }}
     >
       {children}
