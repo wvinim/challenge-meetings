@@ -29,6 +29,9 @@ const useMeetingForm = () => {
     (async function () {
       if (id) {
         const meeting = await getMeetingById(id);
+        if (new Date(meeting.startDateTime) < Date.now()) {
+          navigate("/");
+        }
         if (meeting) {
           setObjective(meeting.objective);
           setStartDateTime(meeting.startDateTime);

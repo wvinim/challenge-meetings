@@ -30,6 +30,10 @@ const validateMeetingForm = (meeting) => {
     errors.push("End time must be after start time.");
   }
 
+  if (meetingStart < Date.now()) {
+    errors.push("Start time must be after now.");
+  }
+
   if (meeting.collaborators.length === 0) {
     errors.push("Please select at least one collaborator.");
   }
