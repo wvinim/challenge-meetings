@@ -105,7 +105,11 @@ export const getAllMeetingsFromIndexedDB = async () => {
     const db = await openIndexedDB();
     const transaction = db.transaction("meetings", "readonly");
     const objectStore = transaction.objectStore("meetings");
-    const request = objectStore.getAll();
+
+    const index = objectStore.index("startDateTime");
+    const request = index.getAll();
+
+    // const request = objectStore.getAll();
 
     return new Promise((resolve, reject) => {
       request.onsuccess = function (event) {

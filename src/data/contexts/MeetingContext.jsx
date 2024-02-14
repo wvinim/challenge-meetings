@@ -22,16 +22,16 @@ export const MeetingProvider = ({ children }) => {
     "Tyler Durden",
   ]);
 
-  useEffect(() => {
-    const loadMeetingsFromIndexedDB = async () => {
-      try {
-        const meetingsFromDB = await getAllMeetingsFromIndexedDB();
-        setMeetings(meetingsFromDB);
-      } catch (error) {
-        console.error("Erro ao carregar reuniões do IndexedDB:", error);
-      }
-    };
+  const loadMeetingsFromIndexedDB = async () => {
+    try {
+      const meetingsFromDB = await getAllMeetingsFromIndexedDB();
+      setMeetings(meetingsFromDB);
+    } catch (error) {
+      console.error("Erro ao carregar reuniões do IndexedDB:", error);
+    }
+  };
 
+  useEffect(() => {
     loadMeetingsFromIndexedDB();
   }, []);
 
@@ -50,8 +50,8 @@ export const MeetingProvider = ({ children }) => {
 
   const addMeeting = async (meeting) => {
     try {
-      const meetingId = await addMeetingToIndexedDB(meeting);
-      setMeetings([...meetings, { ...meeting, id: meetingId }]);
+      await addMeetingToIndexedDB(meeting);
+      loadMeetingsFromIndexedDB();
     } catch (error) {
       setError("Erro ao adicionar reunião");
     }
@@ -60,7 +60,7 @@ export const MeetingProvider = ({ children }) => {
   const deleteMeeting = async (id) => {
     try {
       await deleteMeetingFromIndexedDB(id);
-      setMeetings(meetings.filter((meeting) => meeting.id !== id));
+      loadMeetingsFromIndexedDB();
     } catch (error) {
       setError("Erro ao excluir reunião");
     }
@@ -69,11 +69,7 @@ export const MeetingProvider = ({ children }) => {
   const updateMeeting = async (updatedMeeting) => {
     try {
       await updateMeetingInIndexedDB(updatedMeeting);
-      setMeetings(
-        meetings.map((meeting) =>
-          meeting.id === updatedMeeting.id ? updatedMeeting : meeting
-        )
-      );
+      loadMeetingsFromIndexedDB();
     } catch (error) {
       setError("Erro ao atualizar reunião");
     }
